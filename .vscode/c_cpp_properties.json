@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "RISC-V",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "compilerPath": "E:/msys64/ucrt64/bin/riscv64-unknown-elf-gcc.exe"
+        }
+    ],
+    "version": 4
+}
