@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch",
+            "name": "Launch (minichlink)",
             "type": "cppdbg",
             "request": "launch",
             "cwd": "${workspaceFolder}",
@@ -22,6 +22,32 @@
                 },
             ],
             "svdPath": "${workspaceFolder}/CH32V003xx.svd"
+        },
+        {
+            "name": "Launch (OpenOCD)",
+            "type": "cppdbg",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceRoot}/build/firmware.elf",
+            // TODO vscode seems to never recognize the serverStarted pattern, it never starts gdb...
+            // "debugServerPath": "D:/Downloads/MounRiver_Studio_V192_Setup/app/toolchain/OpenOCD/bin/openocd.exe",
+            // "debugServerArgs": "-s D:/Downloads/MounRiver_Studio_V192_Setup/app/toolchain/OpenOCD/bin -f wch-riscv.cfg",
+            // "serverStarted": ".* Listening on port \\d+ for gdb connections",
+            "MIMode": "gdb",
+            // TODO riscv32-unknown-elf-gdb returns 0xC0000135 = missing dll. should we build the toolchain statically?
+            // "miDebuggerPath": "E:/msys64/home/LaXiS/riscv-gnu-toolchain/build-ch32v003/bin/riscv32-unknown-elf-gdb.exe",
+            "miDebuggerPath": "E:/msys64/ucrt64/bin/gdb-multiarch.exe",
+            "miDebuggerServerAddress": "localhost:3333",
+            "setupCommands": [
+                {
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true,
+                }
+            ],
+            "svdPath": "${workspaceFolder}/CH32V003xx.svd",
+            "logging": {
+                "engineLogging": true
+            }
         }
     ]
 }
