@@ -39,8 +39,8 @@ For debugging with OpenOCD:
 1. TODO
 
 For debugging with minichlink:
-1. Install `pacboy -Syu gdb-multiarch`
-2. Download minichlink EXE and libusb DLL from https://github.com/cnlohr/ch32v003fun/tree/master/minichlink into the project root
+1. Install: `pacboy -Syu gdb-multiarch`
+2. Download minichlink EXE and libusb DLL from https://github.com/cnlohr/ch32v003fun/tree/fix_gdb/minichlink into the project root
 3. Install WinUSB driver with Zadig on `WCH-Link (Interface 0)` for WCH-LinkE programmer
 
 ### Build toolchain in MSYS2 UCRT64
@@ -58,10 +58,6 @@ make -j12 >make.txt 2>&1
 ```
 The `:` after a package name in `pacboy` invocation is needed for packages which are only available for the base MSYS environment.  
 Adjust the number of jobs (`-j12`) based on your CPU core count; the output redirection is there to avoid any slowdown caused by console output.
-
-## TODO
-
-- minichlink debugging is currently broken, try openocd_wch
 
 ## References
 

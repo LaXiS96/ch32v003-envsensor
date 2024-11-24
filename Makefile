@@ -24,7 +24,7 @@ OBJSIZE  = $(PREFIX)-size
 # 		also note that libg is the debug build of libc
 CFLAGS   = -march=rv32ec -mabi=ilp32e -g -Os -flto -ffunction-sections -fdata-sections -fno-builtin -nostdlib -specs=nano.specs
 CFLAGS  += -DF_CPU=48000000
-CFLAGS  += -I$(INCLUDE) -Wall
+CFLAGS  += -I$(INCLUDE) -Wall -Wno-misleading-indentation
 LDFLAGS  = -T$(LDSCRIPT) -Wl,--gc-sections,--build-id=none -lc -lm -lgcc
 
 VPATH    = $(SRC)

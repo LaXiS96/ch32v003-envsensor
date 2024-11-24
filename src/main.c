@@ -2,6 +2,8 @@
 #include <debug.h>
 #include <gpio.h>
 #include <mini-printf.h>
+#include "i2c.h"
+#include "bme280.h"
 
 #define PIN_LED PD4
 
@@ -17,19 +19,32 @@ int main(void)
 {
     SetupDebugPrintf();
 
-    // TODO enable peripheral clocks
-    GPIOC->CFGLR |= GPIO_OUT_ALT_OD << (4 * 1) | GPIO_OUT_ALT_OD << (4 * 2); // Set PC1 and PC2 as alternate function, open-drain
+    RCC->APB1PCENR |= RCC_I2C1EN;
+    RCC->APB2PCENR |= RCC_IOPCEN | RCC_AFIOEN;
+
+    // Set PC1 and PC2 as alternate function, open-drain
+    GPIOC->CFGLR |= GPIO_OUT_ALT_OD << (4 * 1) | GPIO_OUT_ALT_OD << (4 * 2);
+    i2c_init();
+    bme280_init();
 
     PIN_output(PIN_LED);
 
-    char buf[64];
-    int i = 0;
+    char buf[128];
     while (1)
     {
-        int len = snprintf(buf, sizeof(buf), "i: %u\n", i++);
+        int32_t temp = 0;
+        uint32_t press = 0;
+        uint32_t hum = 0;
+        bme280_measure(&temp, &press, &hum);
+
+        int len = snprintf(buf, sizeof(buf),
+                           "temp: %d.%u press: %u.%u hum: %u.%u\n",
+                           (int32_t)(temp / 100.0), (uint32_t)(temp % 100),
+                           (uint32_t)(press / 256.0), (uint32_t)(press % 256),
+                           (uint32_t)(hum / 1024.0), (uint32_t)(hum % 1024));
         _write(0, buf, len); // TODO wrap
 
         PIN_toggle(PIN_LED);
-        DLY_ms(200);
+        DLY_ms(2000);
     }
 }
