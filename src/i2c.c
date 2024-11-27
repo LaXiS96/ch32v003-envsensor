@@ -2,16 +2,15 @@
 
 #include "i2c.h"
 
-#define IS_SET(value, mask) ((value) & (mask))
 #define I2C_ADDR_WRITE(address) ((address) << 1)
 #define I2C_ADDR_READ(address) (((address) << 1) | 1)
 // clang-format off
-#define I2C_WAIT_BUSY() { while (IS_SET(I2C1->STAR2, I2C_STAR2_BUSY)); }
-#define I2C_WAIT_START() { while (!IS_SET(I2C1->STAR1, I2C_STAR1_SB)); }
-#define I2C_WAIT_ADDR() { while (!IS_SET(I2C1->STAR1, I2C_STAR1_ADDR)); I2C1->STAR2; } // ADDR is cleared by reading STAR2 after STAR1
-#define I2C_WAIT_TXDATA() { while (!IS_SET(I2C1->STAR1, I2C_STAR1_TXE)); }
-#define I2C_WAIT_RXDATA() { while (!IS_SET(I2C1->STAR1, I2C_STAR1_RXNE)); }
-#define I2C_WAIT_END() { while (!IS_SET(I2C1->STAR1, I2C_STAR1_BTF)); }
+#define I2C_WAIT_BUSY() { while (iss(I2C1->STAR2, I2C_STAR2_BUSY)); }
+#define I2C_WAIT_START() { while (!iss(I2C1->STAR1, I2C_STAR1_SB)); }
+#define I2C_WAIT_ADDR() { while (!iss(I2C1->STAR1, I2C_STAR1_ADDR)); I2C1->STAR2; } // ADDR is cleared by reading STAR2 after STAR1
+#define I2C_WAIT_TXDATA() { while (!iss(I2C1->STAR1, I2C_STAR1_TXE)); }
+#define I2C_WAIT_RXDATA() { while (!iss(I2C1->STAR1, I2C_STAR1_RXNE)); }
+#define I2C_WAIT_END() { while (!iss(I2C1->STAR1, I2C_STAR1_BTF)); }
 // clang-format on
 
 // TODO implement timeouts in busy waits

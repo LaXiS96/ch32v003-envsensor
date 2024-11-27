@@ -675,3 +675,5 @@ static inline uint32_t __get_SP(void) {
 #ifdef __cplusplus
 };
 #endif
+
+#include <util.h>

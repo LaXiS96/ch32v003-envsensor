@@ -10,6 +10,7 @@
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "program": "${workspaceRoot}/build/firmware.elf",
+            // "stopAtEntry": true,
             "debugServerPath": "${workspaceFolder}/minichlink.exe",
             "debugServerArgs": "-aG",
             "MIMode": "gdb",
@@ -21,7 +22,12 @@
                     "ignoreFailures": true,
                 },
             ],
-            "svdPath": "${workspaceFolder}/CH32V003xx.svd"
+            "svdPath": "${workspaceFolder}/CH32V003xx.svd",
+            "logging": {
+                // "engineLogging": true,
+                // "trace": true,
+                // "traceResponse": true
+            }
         },
         {
             "name": "Launch (OpenOCD)",
@@ -29,6 +35,7 @@
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "program": "${workspaceRoot}/build/firmware.elf",
+            // "stopAtEntry": true,
             // TODO vscode seems to never recognize the serverStarted pattern, it never starts gdb...
             // "debugServerPath": "D:/Downloads/MounRiver_Studio_V192_Setup/app/toolchain/OpenOCD/bin/openocd.exe",
             // "debugServerArgs": "-s D:/Downloads/MounRiver_Studio_V192_Setup/app/toolchain/OpenOCD/bin -f wch-riscv.cfg",
@@ -44,9 +51,16 @@
                     "ignoreFailures": true,
                 }
             ],
+            "postRemoteConnectCommands": [
+                {
+                    "text": "monitor reset halt"
+                }
+            ],
             "svdPath": "${workspaceFolder}/CH32V003xx.svd",
             "logging": {
-                "engineLogging": true
+                // "engineLogging": true,
+                // "trace": true,
+                // "traceResponse": true
             }
         }
     ]

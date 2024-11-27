@@ -11,9 +11,9 @@ LDSCRIPT = ch32v003.ld
 # PREFIX   = "/d/Downloads/MounRiver_Studio_V192_Setup/app/toolchain/RISC-V Embedded GCC12/bin/riscv-none-elf"
 PREFIX   = /e/msys64/home/LaXiS/riscv-gnu-toolchain/build-ch32v003/bin/riscv32-unknown-elf
 
-ISPTOOL  = ./minichlink.exe -w $(OUTPUT).bin flash -b
-# OPENOCD  = /d/Downloads/MounRiver_Studio_V192_Setup/app/toolchain/OpenOCD/bin/openocd.exe
-# ISPTOOL  = $(OPENOCD) -s $(shell dirname "$(OPENOCD)") -f wch-riscv.cfg -c "program $(OUTPUT).elf reset exit"
+# ISPTOOL  = ./minichlink.exe -w $(OUTPUT).bin flash -b
+OPENOCD  = /d/Downloads/MounRiver_Studio_V192_Setup/app/toolchain/OpenOCD/bin/openocd.exe -f /d/Downloads/MounRiver_Studio_V192_Setup/app/toolchain/OpenOCD/bin/wch-riscv.cfg
+ISPTOOL  = $(OPENOCD) -c "program $(OUTPUT).elf reset exit"
 
 CC       = $(PREFIX)-gcc
 OBJCOPY  = $(PREFIX)-objcopy
@@ -61,11 +61,14 @@ map: $(OUTPUT).map
 size: $(OUTPUT).elf
 	@$(OBJSIZE) -d $<
 
+debug: $(OUTPUT).elf
+	$(OPENOCD)
+
 flash: $(OUTPUT).bin
-	$(ISPTOOL)	
+	$(ISPTOOL)
 
 clean:
 	@rm -rf $(BUILD)
 
-.PHONY: all bin asm lst map size flash clean
+.PHONY: all bin asm lst map size debug flash clean
 .SUFFIXES:

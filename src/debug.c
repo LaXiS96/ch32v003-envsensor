@@ -133,3 +133,13 @@ void SetupDebugPrintf( void )
     *DMDATA1 = 0x00;
     *DMDATA0 = 0x80;
 }
+
+void printf(const char *fmt, ...)
+{
+    char buf[128];
+    va_list va;
+    va_start(va, fmt);
+    int len = vsnprintf(buf, sizeof(buf), fmt, va);
+    va_end(va);
+    _write(0, buf, len);
+}
