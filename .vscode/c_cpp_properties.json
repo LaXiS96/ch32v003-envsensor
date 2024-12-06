@@ -1,11 +1,11 @@
 {
     "configurations": [
         {
-            "name": "RISC-V",
-            "includePath": [
-                "${workspaceFolder}/**"
-            ],
-            "compilerPath": "E:/msys64/ucrt64/bin/riscv64-unknown-elf-gcc.exe"
+            "name": "RISC-V from Makefile",
+            // Makefile Tools extensions provides include paths, defines, etc
+            "configurationProvider": "ms-vscode.makefile-tools",
+            // compilerPath must be empty to let Makefile Tools do its thing
+            "compilerPath": ""
         }
     ],
     "version": 4

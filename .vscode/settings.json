@@ -1,0 +1,18 @@
+{
+    "terminal.integrated.profiles.windows": {
+        "MSYS2 UCRT64": {
+            "path": "${env:MSYS2_ROOT}/usr/bin/bash.exe",
+            "args": [
+                "--login",
+                "-i"
+            ],
+            "env": {
+                "MSYSTEM": "UCRT64",
+                "CHERE_INVOKING": "1"
+            }
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "MSYS2 UCRT64",
+    "makefile.configureOnOpen": true,
+    "makefile.makePath": "${env:MSYS2_ROOT}/usr/bin/make.exe"
+}

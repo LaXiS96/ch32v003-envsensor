@@ -4,7 +4,8 @@
 
 #define WEAK __attribute__((weak))
 
-#if 1
+// TODO no printf with openocd, yet
+#if 0
 static volatile char dbgbuf[64];
 static volatile char *pdbgbuf = dbgbuf;
 #define dbg_setup()                             \

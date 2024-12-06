@@ -2,12 +2,17 @@
 
 ## Development
 
+Recommended setup for development on Windows:
+1. Install [MSYS2](https://www.msys2.org/)
+2. Set the `MSYS2_ROOT` environment variable to your MSYS2 installation directory (use forward slashes only, eg. `C:/msys64`)
+3. Open workspace in Visual Studio Code (`.vscode/settings.json` is already configured to use the MSYS2 UCRT64 environment/shell)
+
 Choose your toolchain for Windows (in order of suitability):
 - [official MounRiver IDE](http://mounriver.com/download)
     - includes correct prebuilt libraries (rv32ec-ilp32e)
-    - install via setup or extract it with innoextract, then look for the toolchain folder
-    - includes two GCC versions: 8 and 12
-    - these toolchains should also include support for a custom ISR attribute which is needed when using the HPE peripheral (?)
+    - install via setup or extract with innoextract, then look for the toolchain folder
+    - includes two GCC versions: 8 and 12 (what's the difference?)
+    - these toolchains should also include support for the custom ISR attribute which is needed when using the HPE peripheral (?)
 - manual [RISC-V GNU toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain) build
     - slow and sizeable build, but worth it
 - [riscv-none-elf-gcc-xpack](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack)
@@ -22,14 +27,14 @@ Choose your programmer and debugger (for the WCH-LinkE hardware tool):
     - find it in the MounRiver package
     - requires appropriate driver, found in MounRiver package at LinkDrv/WCHLink
     - flashing and debugging work as expected
+    - TODO debugging terminal output (SWO/SDI)
 - [minichlink](https://github.com/cnlohr/ch32v003fun/tree/master/minichlink)
-    - debugging is a mixed bag, in VSCode it "works" but command line GDB is totally broken
+    - debugging is a mixed bag, in VSCode it "works" but command line GDB is mostly broken
     - has a custom debug terminal that requires a custom implementation MCU-side
     - flashing works OK
 
-MSYS2 UCRT64 is recommended for development under Windows. Also note that using MSYS2 binaries outside an MSYS2 environment can cause problems, like missing DLL errors.
-
-1. Update any relevant path in `Makefile`, `.vscode/c_cpp_properties.json` and `.vscode/launch.json`
+Build and flash:
+1. Update any relevant path in `Makefile` and/or `.vscode` JSONs
 2. Build with `make`
 3. Set up programmer and connect 3V3, GND, SWDIO
 4. Flash with `make flash`
@@ -38,7 +43,7 @@ Debugging with official OpenOCD (recommended):
 1. Uninstall Zadig driver (if any): Device Manager > Universal Serial Bus devices > WCH-Link > Uninstall device
 2. In its own terminal, run `make debug` or launch OpenOCD: `openocd.exe -f wch-riscv.cfg`
     - (`wch-riscv.cfg` may need a full path, it's in the same directory as `openocd.exe`)
-3. Start debugging in VSCode with the correct launch configuration, or use `gdb-multiarch`/`riscv32-unknown-elf-gdb`:
+3. Start debugging in VSCode with the correct launch configuration, or use `gdb-multiarch`/`riscv32-unknown-elf-gdb` via command line:
 ```sh
 $ riscv32-unknown-elf-gdb build/firmware.elf
 (gdb) target extended-remote :3333 # Connect to OpenOCD
@@ -69,11 +74,13 @@ Debugging with minichlink:
 pacboy -Syu toolchain autoconf: automake: curl python3 mpc mpfr gmp gawk: base-devel: bison: flex: texinfo gperf libtool patchutils: bc zlib expat libslirp
 git clone https://github.com/riscv/riscv-gnu-toolchain
 cd riscv-gnu-toolchain/
-./configure --prefix $(pwd)/build-ch32v003 --with-arch=rv32ec --with-abi=ilp32e
+./configure --with-arch=rv32ec --with-abi=ilp32e
 make -j12 >make.txt 2>&1
 ```
 The `:` after a package name in `pacboy` invocation is needed for packages which are only available for the base MSYS environment.  
 Adjust the number of jobs (`-j12`) based on your CPU core count; the output redirection is there to avoid any slowdown caused by console output.
+
+Note: avoid configuring with a custom installation prefix, because the built executables won't be able to find the DLLs which MSYS2 provides in `/ucrt64/bin` and won't run outside a MSYS2 shell.
 
 ## References
 

@@ -46,6 +46,7 @@ static int32_t compensate_temp(int32_t adc_T, int32_t *t_fine)
     return T;
 }
 
+#if BME280_PRESS_COMP_64BIT
 // Returns pressure in Pa as unsigned 32 bit integer in Q24.8 format (24 integer bits and 8 fractional bits).
 // Output value of “24674867” represents 24674867/256 = 96386.2 Pa = 963.862 hPa
 static uint32_t compensate_press(int32_t adc_P, int32_t t_fine)
@@ -68,6 +69,40 @@ static uint32_t compensate_press(int32_t adc_P, int32_t t_fine)
     p = ((p + var1 + var2) >> 8) + (((int64_t)dig_P7) << 4);
     return (uint32_t)p;
 }
+#else
+// Returns pressure in Pa as unsigned 32 bit integer. Output value of “96386” equals 96386 Pa = 963.86 hPa
+static uint32_t compensate_press(int32_t adc_P, int32_t t_fine)
+{
+    int32_t var1, var2;
+    uint32_t p;
+    var1 = (((int32_t)t_fine) >> 1) - (int32_t)64000;
+    var2 = (((var1 >> 2) * (var1 >> 2)) >> 11) * ((int32_t)dig_P6);
+    var2 = var2 + ((var1 * ((int32_t)dig_P5)) << 1);
+    var2 = (var2 >> 2) + (((int32_t)dig_P4) << 16);
+    var1 = (((dig_P3 * (((var1 >> 2) * (var1 >> 2)) >> 13)) >> 3) + ((((int32_t)dig_P2) *
+                                                                      var1) >>
+                                                                     1)) >>
+           18;
+    var1 = ((((32768 + var1)) * ((int32_t)dig_P1)) >> 15);
+    if (var1 == 0)
+    {
+        return 0; // avoid exception caused by division by zero
+    }
+    p = (((uint32_t)(((int32_t)1048576) - adc_P) - (var2 >> 12))) * 3125;
+    if (p < 0x80000000)
+    {
+        p = (p << 1) / ((uint32_t)var1);
+    }
+    else
+    {
+        p = (p / (uint32_t)var1) * 2;
+    }
+    var1 = (((int32_t)dig_P9) * ((int32_t)(((p >> 3) * (p >> 3)) >> 13))) >> 12;
+    var2 = (((int32_t)(p >> 2)) * ((int32_t)dig_P8)) >> 13;
+    p = (uint32_t)((int32_t)p + ((var1 + var2 + dig_P7) >> 4));
+    return p;
+}
+#endif
 
 // Returns humidity in %RH as unsigned 32 bit integer in Q22.10 format (22 integer and 10 fractional bits).
 // Output value of “47445” represents 47445/1024 = 46.333 %RH

@@ -14,7 +14,7 @@
             "debugServerPath": "${workspaceFolder}/minichlink.exe",
             "debugServerArgs": "-aG",
             "MIMode": "gdb",
-            "miDebuggerPath": "E:/msys64/ucrt64/bin/gdb-multiarch.exe",
+            "miDebuggerPath": "${env:MSYS2_ROOT}/ucrt64/bin/gdb-multiarch.exe",
             "miDebuggerServerAddress": "localhost:2000",
             "setupCommands": [
                 {
@@ -41,9 +41,8 @@
             // "debugServerArgs": "-s D:/Downloads/MounRiver_Studio_V192_Setup/app/toolchain/OpenOCD/bin -f wch-riscv.cfg",
             // "serverStarted": ".* Listening on port \\d+ for gdb connections",
             "MIMode": "gdb",
-            // TODO riscv32-unknown-elf-gdb returns 0xC0000135 = missing dll. should we build the toolchain statically?
-            // "miDebuggerPath": "E:/msys64/home/LaXiS/riscv-gnu-toolchain/build-ch32v003/bin/riscv32-unknown-elf-gdb.exe",
-            "miDebuggerPath": "E:/msys64/ucrt64/bin/gdb-multiarch.exe",
+            "miDebuggerPath": "${env:MSYS2_ROOT}/ucrt64/bin/riscv32-unknown-elf-gdb.exe",
+            // "miDebuggerPath": "${env:MSYS2_ROOT}/ucrt64/bin/gdb-multiarch.exe",
             "miDebuggerServerAddress": "localhost:3333",
             "setupCommands": [
                 {

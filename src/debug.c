@@ -35,7 +35,7 @@ void poll_input( void )
     }
 }
 
-
+#if 0
 //           MSB .... LSB
 // DMDATA0: char3 char2 char1 [status word]
 // where [status word] is:
@@ -101,6 +101,45 @@ WEAK int _write(int fd, const char *buf, int size)
     }
     return size;
 }
+#else
+int _write(int fd, const char *buf, int size)
+{
+    int i = 0;
+    int writeSize = size;
+    do
+    {
+
+        /**
+         * data0  data1 8 bytes
+         * data0 The lowest byte storage length, the maximum is 7
+         *
+         */
+
+        while( (*(DMDATA0) != 0u))
+        {
+
+        }
+
+        if(writeSize>7)
+        {
+            *(DMDATA1) = (*(buf+i+3)) | (*(buf+i+4)<<8) | (*(buf+i+5)<<16) | (*(buf+i+6)<<24);
+            *(DMDATA0) = (7u) | (*(buf+i)<<8) | (*(buf+i+1)<<16) | (*(buf+i+2)<<24);
+
+            i += 7;
+            writeSize -= 7;
+        }
+        else
+        {
+            *(DMDATA1) = (*(buf+i+3)) | (*(buf+i+4)<<8) | (*(buf+i+5)<<16) | (*(buf+i+6)<<24);
+            *(DMDATA0) = (writeSize) | (*(buf+i)<<8) | (*(buf+i+1)<<16) | (*(buf+i+2)<<24);
+
+            writeSize = 0;
+        }
+
+    } while (writeSize);
+    return writeSize;
+}
+#endif
 
 // single to debug intf
 WEAK int putchar(int c)
